@@ -10,7 +10,7 @@ function sendLogs(logs, callback) {
   }
 
   try {
-    request({
+    return request({
       method: 'POST',
       url: config.endpoint,
       headers: { 'Content-Type': 'application/json' },
@@ -29,7 +29,7 @@ function sendLogs(logs, callback) {
   }
 }
 
-function Sumologic (endpoint) {
+function Sumologic(endpoint) {
   if (!endpoint) {
     throw new Error('Endpoint is required for Sumologic');
   }
