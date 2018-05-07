@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const uuid = require('node-uuid');
-const request = require('request');
+const request = require('superagent');
 
 let config = {};
 
@@ -10,20 +10,20 @@ function sendLogs(logs, callback) {
   }
 
   try {
-    request({
-      method: 'POST',
-      url: config.endpoint,
-      headers: { 'Content-Type': 'application/json' },
-      body: logs.concat('\n')
-    }, (error, response) => {
-      const isError = !!error || response.statusCode < 200 || response.statusCode >= 400;
+    request
+      .post(config.endpoint)
+      .send(logs.concat('\n'))
+      .set('Content-Type', 'application/json')
+      .end(function(err, res){
+        if (err || res.statusCode < 200 || res.statusCode >= 400) {
+          const error = res.error || err.response;
+          const errText = error && error.text && error.text.replace(/<\/?[^>]+>/gi, '');
 
-      if (isError) {
-        return callback(error || response.error || response.body);
-      }
+          return callback(errText || err || res.statusCode);
+        }
 
-      return callback();
-    });
+        return callback();
+      });
   } catch (e) {
     return callback(e);
   }
