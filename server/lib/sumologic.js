@@ -12,7 +12,7 @@ function sendLogs(logs, callback) {
   try {
     request
       .post(config.endpoint)
-      .send(logs.concat('\n'))
+      .send(logs)
       .set('Content-Type', 'application/json')
       .end(function(err, res){
         if (err || res.statusCode < 200 || res.statusCode >= 400) {
@@ -55,8 +55,7 @@ Sumologic.prototype.send = function(logs, callback) {
       timestamp: timestamp
     };
 
-    message.push(JSON.stringify(_.extend(data, client, log)));
-    message.push('\n');
+    message.push(_.extend(data, client, log));
   });
 
   return sendLogs(message, callback);
