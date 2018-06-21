@@ -1,4 +1,3 @@
-const async = require('async');
 const moment = require('moment');
 const loggingTools = require('auth0-log-extension-tools');
 
@@ -40,7 +39,8 @@ module.exports = (storage) =>
       batchSize: parseInt(config('BATCH_SIZE')),
       startFrom: config('START_FROM'),
       logLevel: config('LOG_LEVEL'),
-      logTypes: config('LOG_TYPES')
+      logTypes: config('LOG_TYPES'),
+      logger
     };
 
     if (!options.batchSize || options.batchSize > 100) {
