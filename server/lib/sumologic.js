@@ -12,11 +12,11 @@ function sendLogs(logs, callback) {
   try {
     request
       .post(config.endpoint)
-      .send(logs)
+      .send(logs.map(log => JSON.stringify(log)).join('\n'))
       .set('Content-Type', 'application/json')
-      .end(function(err, res){
+      .end(function(err, res) {
         if (err || res.statusCode < 200 || res.statusCode >= 400) {
-          const error = res.error || err.response;
+          const error = (res && res.error) || err.response;
           const errText = error && error.text && error.text.replace(/<\/?[^>]+>/gi, '');
 
           return callback(errText || err || res.statusCode);
